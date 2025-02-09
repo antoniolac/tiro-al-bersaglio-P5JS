@@ -1,0 +1,24 @@
+body{
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #d1d1d3;
+}
+
+h1{
+    font-size: 45px;
+    font-family: fantasy;
+    line-height: 1;
+    color: #000;
+}
+
+h1::before{
+    content: "";
+    display: block;
+    width: 100px;
+    background-image: url(../images/icon.png);
+    background-size: 100px, 100px;
+
+}
