@@ -1,8 +1,10 @@
 let diametro = 480;
 let punti = 0;
-let frecciaX = null, frecciaY = null;
 let messaggio = "";
-let colpito = false;
+let play = false;
+let clickX = null;
+let clickY = null;
+let lastType = "";
 
 function setup() {
   createCanvas(600, 600);
@@ -11,12 +13,10 @@ function setup() {
 
 function draw() {
   background("#d1d1d3");
-  
+
   let centroX = width / 2;
   let centroY = height / 2;
-  let raggio = diametro / 2;
-  let step = 80;
-  
+
   fill("#f45");
   circle(centroX, centroY, diametro);
   fill("#fff");
@@ -31,60 +31,70 @@ function draw() {
   circle(centroX, centroY, diametro - 360);
   fill("#f45");
   circle(centroX, centroY, diametro - 440);
-  
+
   fill(0);
   textSize(24);
   textAlign(CENTER, CENTER);
   text(`Punti: ${punti}`, width / 2, 30);
-  
+
   textSize(18);
   fill(0);
   text(messaggio, width / 2, height - 50);
-  
-  if (frecciaX !== null && frecciaY !== null) {
-    if (colpito) {
-      drawArrow(frecciaX, frecciaY);
-    } else {
-      drawX(frecciaX, frecciaY);
+
+  if (clickX !== null && clickY !== null) {
+    if (lastType === "triangle") {
+      fill("black");
+      noStroke();
+      triangle(clickX, clickY, clickX - 5, clickY + 15, clickX + 5, clickY + 15);
+    } else if (lastType === "cross") {
+      stroke("red");
+      strokeWeight(4);
+      line(clickX - 10, clickY - 10, clickX + 10, clickY + 10);
+      line(clickX - 10, clickY + 10, clickX + 10, clickY - 10);
     }
   }
 }
 
 function mouseClicked() {
+  if (!play) return;
+
   let centroX = width / 2;
   let centroY = height / 2;
   let distanza = dist(mouseX, mouseY, centroX, centroY);
   let raggio = diametro / 2;
-  let step = raggio / 7;  // Dividi il raggio in 7 segmenti
-
-  let punteggi = [5, 10, 20, 30, 40, 50, 60]; // Punti dal bordo verso il centro
-  let livello = Math.floor(distanza / step);  // Calcolo del livello corretto
 
   if (distanza <= raggio) {
-    if (livello >= 0 && livello < punteggi.length) {
-      punti += punteggi[livello]; // Assegna i punti corretti
-    }
     messaggio = "Ottimo colpo!";
-    colpito = true;
+    lastType = "triangle";
+    if (distanza <= 40) 
+      punti += 50;
+    else if (distanza <= 80) 
+      punti += 40;
+    else if (distanza <= 120) 
+      punti += 35;
+    else if (distanza <= 160) 
+      punti += 30;
+    else if (distanza <= 240) 
+      punti += 20;
+    else if (distanza <= 320) 
+      punti += 10;
+    else 
+      punti += 5;
   } else {
     messaggio = "Bersaglio Mancato!";
-    colpito = false;
+    lastType = "cross";
   }
 
-  frecciaX = mouseX;
-  frecciaY = mouseY;
+  clickX = mouseX;
+  clickY = mouseY;
 }
 
+let btn = document.querySelector("#play");
+btn.addEventListener("click", function () {
+  play = true;
+  messaggio = "Il gioco è iniziato!";
+  clickX = null;
+  clickY = null;
+  lastType = "";
+});
 
-function drawArrow(x, y) {
-  fill("black");
-  noStroke();
-  triangle(x, y, x - 5, y + 15, x + 5, y + 15);
-}
-
-function drawX(x, y) {
-  stroke("red");
-  strokeWeight(4);
-  line(x - 10, y - 10, x + 10, y + 10);
-  line(x - 10, y + 10, x + 10, y - 10);
-}
