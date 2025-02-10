@@ -56,7 +56,7 @@ function draw() {
 }
 
 function mouseClicked() {
-  if (!play) return;
+  if (!play || mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height) return;
 
   let centroX = width / 2;
   let centroY = height / 2;
@@ -91,10 +91,17 @@ function mouseClicked() {
 
 let btn = document.querySelector("#play");
 btn.addEventListener("click", function () {
-  play = true;
-  messaggio = "Il gioco è iniziato!";
-  clickX = null;
-  clickY = null;
-  lastType = "";
+  if (!play) {
+    play = true;
+    messaggio = "Il gioco è iniziato!";
+    punti = 0;
+    clickX = null;
+    clickY = null;
+    lastType = "";
+    btn.textContent = "Reset";
+  } else {
+    play = false;
+    messaggio = "Premi Play per iniziare!";
+    btn.textContent = "Play";
+  }
 });
-
